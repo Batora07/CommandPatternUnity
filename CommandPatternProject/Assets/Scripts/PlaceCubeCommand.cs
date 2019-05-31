@@ -22,4 +22,9 @@ public class PlaceCubeCommand : ICommand
 	{
 		CubePlacer.PlaceCube(position, color, cube);
 	}
+
+	public void Undo()
+	{
+		CubePlacer.RemoveCube(position, color);
+	}
 }

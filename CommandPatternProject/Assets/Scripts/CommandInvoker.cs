@@ -5,23 +5,57 @@ using UnityEngine;
 public class CommandInvoker : MonoBehaviour
 {
 	private static Queue<ICommand> commandBuffer;
+	private static List<ICommand> commandHistory;
+	private static int counter = 0;
 
 	private void Awake()
 	{
 		commandBuffer = new Queue<ICommand>();
+		commandHistory = new List<ICommand>();
 	}
 
 	public static void AddCommand(ICommand command)
 	{
+		// we're somewhere not at the end of the history
+		while(commandHistory.Count > counter)
+		{
+			commandHistory.RemoveAt(counter);
+		}
+		
 		commandBuffer.Enqueue(command);
 	}
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if(commandBuffer.Count > 0)
 		{
-			commandBuffer.Dequeue().Execute();
+			ICommand c = commandBuffer.Dequeue();
+			c.Execute();
+
+			commandHistory.Add(c);
+			counter++;
+			Debug.Log("Command history length " + commandHistory.Count);
+		}
+		else
+		{
+			// should probably be put in a Input Manager script, but will do the tricks for now
+			if(Input.GetKeyDown(KeyCode.Z))
+			{
+				if(counter > 0)
+				{
+					counter--;
+					commandHistory[counter].Undo();
+				}
+			}
+			else if(Input.GetKeyDown(KeyCode.R))
+			{
+				if(counter < commandHistory.Count)
+				{
+					commandHistory[counter].Execute();
+					counter++;
+				}
+			}
 		}
     }
 }
