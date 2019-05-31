@@ -57,5 +57,29 @@ public class CommandInvoker : MonoBehaviour
 				}
 			}
 		}
+
+		if(Input.GetKeyDown(KeyCode.E))
+		{
+			ExportLog();
+		}
     }
+
+	private static void ExportLog()
+	{
+		List<string> lines = new List<string>();
+		foreach (ICommand c in commandHistory)
+		{
+			lines.Add(c.ToString());
+		}
+
+		int nbLines = lines.Count;
+		string[] arrayConvertedLines = new string[nbLines+1];
+
+		for(int i = 0; i < nbLines; ++i)
+		{
+			arrayConvertedLines[i] = lines[i];
+		}
+
+		System.IO.File.WriteAllLines(Application.dataPath + "/commandLog.txt", arrayConvertedLines);
+	}
 }

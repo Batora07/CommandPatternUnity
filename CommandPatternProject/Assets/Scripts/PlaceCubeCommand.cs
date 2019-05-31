@@ -27,4 +27,9 @@ public class PlaceCubeCommand : ICommand
 	{
 		CubePlacer.RemoveCube(position, color);
 	}
+
+	public override string ToString()
+	{
+		return "PlaceCube\t" + position.x + ":" + position.y +":" + position.z + "\t" + color.r + ":" + color.g + ";" + color.b;
+	}
 }
